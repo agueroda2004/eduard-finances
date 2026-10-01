@@ -18,4 +18,6 @@ Add a short description in each commit to be more explicit with changes.
 
 This folder is just like a 'domain' but with other name
 
+Use it to define types and functions interfaces
+
 ---
