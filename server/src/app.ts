@@ -1,6 +1,6 @@
 import express from "express";
-import { errorHandler, notFoundHandler } from "./middleware/error";
-import { accountRouter } from "./routes/account.routes";
+import { errorHandler, notFoundHandler } from "./middleware/error.js";
+import { accountRouter } from "./routes/account.routes.js";
 
 export function createApp() {
   const app = express();

@@ -1,11 +1,11 @@
 import { and, eq } from "drizzle-orm";
-import { db } from "../db/client";
-import { accounts, type AccountRow } from "../db/schema";
+import { db } from "../db/client.js";
+import { accounts, type AccountRow } from "../db/schema.js";
 import type {
   Account,
   CreateAccountDTO,
   UpdateAccountDTO,
-} from "../types/account";
+} from "../types/account.js";
 
 function toAccount(row: AccountRow): Account {
   return {

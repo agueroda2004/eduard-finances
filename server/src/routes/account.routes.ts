@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { z } from "zod";
-import { requireAuth } from "../middleware/auth";
+import { requireAuth } from "../middleware/auth.js";
 import {
   createAccount,
   deleteAccount,
   getAccount,
   listAccounts,
   updateAccount,
-} from "../repositories/account.repository";
+} from "../repositories/account.repository.js";
 
 const ACCOUNT_TYPES = ["cash", "credit_card", "debit_card", "saving"] as const;
 const CURRENCIES = ["CRC"] as const;
