@@ -1,4 +1,11 @@
-import { ArrowLeftRight, ArrowRightLeft, Landmark, Tags, X } from "lucide-react";
+import {
+  ArrowLeftRight,
+  ArrowRightLeft,
+  Landmark,
+  LayoutDashboard,
+  Tags,
+  X,
+} from "lucide-react";
 import { NavLink } from "react-router";
 import { Logo } from "../../../components/Logo";
 import { cn } from "../../../utils/cn";
@@ -28,6 +35,22 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
+        <NavLink
+          to="/"
+          end
+          onClick={onClose}
+          className={({ isActive }) =>
+            cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+              isActive
+                ? "bg-muted text-foreground"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+            )
+          }
+        >
+          <LayoutDashboard className="size-4" />
+          Inicio
+        </NavLink>
         <NavLink
           to="/accounts"
           onClick={onClose}
