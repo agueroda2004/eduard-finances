@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Filter, Plus, X } from "lucide-react";
-import { BottomSheet } from "../../../components/BottomSheet";
+import { useSearchParams } from "react-router";
 import { Button } from "../../../components/Button";
+import { ConfirmSheet } from "../../../components/ConfirmSheet";
 import { DatePicker } from "../../../components/DatePicker";
 import { Dropdown } from "../../../components/Dropdown";
 import { Field } from "../../../components/Field";
@@ -65,7 +66,8 @@ function filtersEqual(a: Filters, b: Filters): boolean {
 export function TransactionsPage() {
   const [draft, setDraft] = useState<Filters>(createDefaultFilters);
   const [applied, setApplied] = useState<Filters>(createDefaultFilters);
-  const [isCreateOpen, setCreateOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isCreateOpen = searchParams.get("new") !== null;
   const [editingTransaction, setEditingTransaction] =
     useState<Transaction | null>(null);
   const [deletingTransaction, setDeletingTransaction] =
@@ -112,6 +114,18 @@ export function TransactionsPage() {
     setApplied(draft);
   }
 
+  function openCreate() {
+    const next = new URLSearchParams(searchParams);
+    next.set("new", "1");
+    setSearchParams(next);
+  }
+
+  function closeCreate() {
+    const next = new URLSearchParams(searchParams);
+    next.delete("new");
+    setSearchParams(next, { replace: true });
+  }
+
   function handleClear() {
     const defaults = createDefaultFilters();
     setDraft(defaults);
@@ -149,7 +163,7 @@ export function TransactionsPage() {
             Administra tus movimientos.
           </p>
         </div>
-        <Button size="sm" onClick={() => setCreateOpen(true)}>
+        <Button size="sm" onClick={openCreate}>
           <Plus className="size-4" />
           Nueva transacción
         </Button>
@@ -267,10 +281,7 @@ export function TransactionsPage() {
         </ul>
       )}
 
-      <CreateTransactionSheet
-        open={isCreateOpen}
-        onClose={() => setCreateOpen(false)}
-      />
+      <CreateTransactionSheet open={isCreateOpen} onClose={closeCreate} />
 
       <EditTransactionSheet
         open={editingTransaction !== null}
@@ -278,35 +289,14 @@ export function TransactionsPage() {
         onClose={() => setEditingTransaction(null)}
       />
 
-      <BottomSheet
+      <ConfirmSheet
         open={deletingTransaction !== null}
         onClose={() => setDeletingTransaction(null)}
+        onConfirm={handleDelete}
         title="Eliminar transacción"
-      >
-        {deletingTransaction ? (
-          <div className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">
-              ¿Seguro que quieres eliminar esta transacción? Se ajustará el
-              saldo de la cuenta y esta acción no se puede deshacer.
-            </p>
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="ghost"
-                onClick={() => setDeletingTransaction(null)}
-              >
-                Cancelar
-              </Button>
-              <Button
-                variant="danger"
-                onClick={handleDelete}
-                disabled={isRemoving}
-              >
-                {isRemoving ? "Eliminando..." : "Eliminar"}
-              </Button>
-            </div>
-          </div>
-        ) : null}
-      </BottomSheet>
+        description="¿Seguro que quieres eliminar esta transacción? Se ajustará el saldo de la cuenta y esta acción no se puede deshacer."
+        isLoading={isRemoving}
+      />
     </div>
   );
 }

@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "typecheck:server": "tsc -p tsconfig.server.json",
     "server:dev": "tsx watch server/src/index.ts",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "pwa:assets": "pwa-assets-generator"
   },
   "dependencies": {
     "@clerk/backend": "^3.21.1",
@@ -35,6 +36,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vercel/node": "^16.0.2",
+    "@vite-pwa/assets-generator": "^2.0.0",
     "@vitejs/plugin-react": "^6.1.1",
     "drizzle-kit": "^0.31.11",
     "eslint": "^10.10.0",
@@ -44,6 +46,9 @@
     "tsx": "^4.23.15",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.69.0",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "vite-plugin-pwa": "^1.3.0",
+    "workbox-build": "^7.4.1",
+    "workbox-window": "^7.4.1"
   }
 }

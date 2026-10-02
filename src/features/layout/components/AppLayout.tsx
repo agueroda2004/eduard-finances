@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 import { Navbar } from "./Navbar";
+import { QuickAddButton } from "./QuickAddButton";
 import { Sidebar } from "./Sidebar";
 
 export function AppLayout() {
@@ -58,6 +59,8 @@ export function AppLayout() {
           <Outlet />
         </main>
       </div>
+
+      <QuickAddButton />
     </div>
   );
 }
