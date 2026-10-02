@@ -23,11 +23,19 @@ function toAccount(row: AccountRow): Account {
   };
 }
 
-export async function listAccounts(ownerId: string): Promise<Account[]> {
+export async function listAccounts(
+  ownerId: string,
+  { includeInactive = false }: { includeInactive?: boolean } = {},
+): Promise<Account[]> {
+  const conditions = [eq(accounts.ownerId, ownerId)];
+  if (!includeInactive) {
+    conditions.push(eq(accounts.active, true));
+  }
+
   const rows = await db
     .select()
     .from(accounts)
-    .where(eq(accounts.ownerId, ownerId));
+    .where(and(...conditions));
 
   return rows.map(toAccount);
 }

@@ -30,9 +30,10 @@ export const accountRouter = Router();
 
 accountRouter.use(requireAuth);
 
-accountRouter.get("/accounts", async (_req, res) => {
+accountRouter.get("/accounts", async (req, res) => {
   const ownerId = res.locals.ownerId as string;
-  const accounts = await listAccounts(ownerId);
+  const includeInactive = req.query.includeInactive === "true";
+  const accounts = await listAccounts(ownerId, { includeInactive });
   res.json(accounts);
 });
 
