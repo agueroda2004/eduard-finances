@@ -1,6 +1,8 @@
 import {
   boolean,
+  date,
   doublePrecision,
+  index,
   pgEnum,
   pgTable,
   text,
@@ -18,6 +20,11 @@ export const accountTypeEnum = pgEnum("account_type", [
 ]);
 
 export const categoryTypeEnum = pgEnum("category_type", ["income", "expense"]);
+
+export const transactionTypeEnum = pgEnum("transaction_type", [
+  "income",
+  "expense",
+]);
 
 export const currencyEnum = pgEnum("currency", ["CRC"]);
 
@@ -82,6 +89,46 @@ export const subcategories = pgTable("subcategories", {
     .defaultNow(),
 });
 
+export const transactions = pgTable(
+  "transactions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    ownerId: text("owner_id").notNull(),
+    accountId: uuid("account_id")
+      .notNull()
+      .references(() => accounts.id, { onDelete: "cascade" }),
+    categoryId: uuid("category_id")
+      .notNull()
+      .references(() => categories.id, { onDelete: "restrict" }),
+    subcategoryId: uuid("subcategory_id").references(() => subcategories.id, {
+      onDelete: "set null",
+    }),
+    amount: doublePrecision("amount").notNull(),
+    note: varchar("note", { length: 500 }),
+    type: transactionTypeEnum("type").notNull(),
+    createdAt: date("created_at").notNull(),
+  },
+  (table) => [index("Date").on(table.createdAt)],
+);
+
+export const transfers = pgTable(
+  "transfers",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    ownerId: text("owner_id").notNull(),
+    fromAccountId: uuid("from_account_id")
+      .notNull()
+      .references(() => accounts.id, { onDelete: "cascade" }),
+    toAccountId: uuid("to_account_id")
+      .notNull()
+      .references(() => accounts.id, { onDelete: "cascade" }),
+    amount: doublePrecision("amount").notNull(),
+    note: varchar("note", { length: 500 }),
+    date: date("date").notNull(),
+  },
+  (table) => [index("transfers_date_idx").on(table.date)],
+);
+
 export type AccountRow = typeof accounts.$inferSelect;
 export type NewAccountRow = typeof accounts.$inferInsert;
 
@@ -90,3 +137,9 @@ export type NewCategoryRow = typeof categories.$inferInsert;
 
 export type SubcategoryRow = typeof subcategories.$inferSelect;
 export type NewSubcategoryRow = typeof subcategories.$inferInsert;
+
+export type TransactionRow = typeof transactions.$inferSelect;
+export type NewTransactionRow = typeof transactions.$inferInsert;
+
+export type TransferRow = typeof transfers.$inferSelect;
+export type NewTransferRow = typeof transfers.$inferInsert;

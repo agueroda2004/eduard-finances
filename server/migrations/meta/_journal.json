@@ -15,6 +15,20 @@
       "when": 1790909864015,
       "tag": "0001_aromatic_gunslinger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790950117726,
+      "tag": "0002_flimsy_cloak",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790954053877,
+      "tag": "0003_motionless_snowbird",
+      "breakpoints": true
     }
   ]
 }

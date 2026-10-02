@@ -27,6 +27,36 @@ function writeAll(accounts: Account[]): void {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
 }
 
+export function hasAccountLocal(
+  ownerId: string,
+  accountId: AccountId,
+): boolean {
+  return readAll().some(
+    (account) => account.id === accountId && account.ownerId === ownerId,
+  );
+}
+
+export function adjustAccountBalanceLocal(
+  ownerId: string,
+  accountId: AccountId,
+  delta: number,
+): boolean {
+  const accounts = readAll();
+  const index = accounts.findIndex(
+    (account) => account.id === accountId && account.ownerId === ownerId,
+  );
+  const current = accounts[index];
+
+  if (!current) {
+    return false;
+  }
+
+  accounts[index] = { ...current, balance: (current.balance ?? 0) + delta };
+  writeAll(accounts);
+
+  return true;
+}
+
 export function createAccountLocalService(): AccountRepository {
   return {
     async findAll(ownerId, options) {
