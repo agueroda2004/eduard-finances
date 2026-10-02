@@ -8,6 +8,13 @@
       "when": 1790894166586,
       "tag": "0000_wealthy_naoko",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790909864015,
+      "tag": "0001_aromatic_gunslinger",
+      "breakpoints": true
     }
   ]
 }
