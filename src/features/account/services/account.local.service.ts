@@ -6,6 +6,8 @@ import type {
 } from "../types/account";
 import type { AccountRepository } from "../types/account.interface";
 import { DEFAULT_CURRENCY } from "../types/account.constants";
+import { hasTransactionsForAccount } from "../../transaction/services/transaction.relations";
+import { hasTransfersForAccount } from "../../transfer/services/transfer.relations";
 
 const STORAGE_KEY = "eduard:accounts";
 
@@ -114,6 +116,12 @@ export function createAccountLocalService(): AccountRepository {
     },
 
     async remove(id: AccountId) {
+      if (hasTransactionsForAccount(id) || hasTransfersForAccount(id)) {
+        throw new Error(
+          "No se puede eliminar la cuenta porque tiene transacciones o transferencias asociadas.",
+        );
+      }
+
       const accounts = readAll();
       writeAll(accounts.filter((account) => account.id !== id));
     },

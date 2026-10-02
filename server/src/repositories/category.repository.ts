@@ -3,6 +3,7 @@ import { db } from "../db/client.js";
 import {
   categories,
   subcategories,
+  transactions,
   type CategoryRow,
   type SubcategoryRow,
 } from "../db/schema.js";
@@ -14,6 +15,7 @@ import type {
   UpdateCategoryDTO,
   UpdateSubcategoryDTO,
 } from "../types/category.js";
+import type { DeleteResult } from "../types/common.js";
 
 function toCategory(row: CategoryRow): Category {
   return {
@@ -112,13 +114,48 @@ export async function updateCategory(
 export async function deleteCategory(
   ownerId: string,
   id: string,
-): Promise<boolean> {
-  const rows = await db
-    .delete(categories)
-    .where(and(eq(categories.ownerId, ownerId), eq(categories.id, id)))
-    .returning({ id: categories.id });
+): Promise<DeleteResult> {
+  return db.transaction(async (tx) => {
+    const [category] = await tx
+      .select({ id: categories.id })
+      .from(categories)
+      .where(and(eq(categories.ownerId, ownerId), eq(categories.id, id)));
 
-  return rows.length > 0;
+    if (!category) {
+      return "not_found";
+    }
+
+    const [transaction] = await tx
+      .select({ id: transactions.id })
+      .from(transactions)
+      .where(
+        and(
+          eq(transactions.ownerId, ownerId),
+          eq(transactions.categoryId, id),
+        ),
+      )
+      .limit(1);
+
+    if (transaction) {
+      return "in_use";
+    }
+
+    const [subcategory] = await tx
+      .select({ id: subcategories.id })
+      .from(subcategories)
+      .where(eq(subcategories.categoryId, id))
+      .limit(1);
+
+    if (subcategory) {
+      return "in_use";
+    }
+
+    await tx
+      .delete(categories)
+      .where(and(eq(categories.ownerId, ownerId), eq(categories.id, id)));
+
+    return "deleted";
+  });
 }
 
 export async function listSubcategories(
@@ -205,16 +242,37 @@ export async function updateSubcategory(
 export async function deleteSubcategory(
   ownerId: string,
   id: string,
-): Promise<boolean> {
-  const rows = await db
-    .delete(subcategories)
-    .where(
-      and(
-        eq(subcategories.id, id),
-        inArray(subcategories.categoryId, ownedCategoryIds(ownerId)),
-      ),
-    )
-    .returning({ id: subcategories.id });
+): Promise<DeleteResult> {
+  return db.transaction(async (tx) => {
+    const [subcategory] = await tx
+      .select({ id: subcategories.id })
+      .from(subcategories)
+      .innerJoin(categories, eq(subcategories.categoryId, categories.id))
+      .where(
+        and(eq(categories.ownerId, ownerId), eq(subcategories.id, id)),
+      );
 
-  return rows.length > 0;
+    if (!subcategory) {
+      return "not_found";
+    }
+
+    const [transaction] = await tx
+      .select({ id: transactions.id })
+      .from(transactions)
+      .where(
+        and(
+          eq(transactions.ownerId, ownerId),
+          eq(transactions.subcategoryId, id),
+        ),
+      )
+      .limit(1);
+
+    if (transaction) {
+      return "in_use";
+    }
+
+    await tx.delete(subcategories).where(eq(subcategories.id, id));
+
+    return "deleted";
+  });
 }

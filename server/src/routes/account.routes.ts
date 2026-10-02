@@ -81,10 +81,18 @@ accountRouter.patch("/accounts/:id", async (req, res) => {
 
 accountRouter.delete("/accounts/:id", async (req, res) => {
   const ownerId = res.locals.ownerId as string;
-  const removed = await deleteAccount(ownerId, req.params.id);
+  const result = await deleteAccount(ownerId, req.params.id);
 
-  if (!removed) {
+  if (result === "not_found") {
     res.status(404).json({ error: "Cuenta no encontrada" });
+    return;
+  }
+
+  if (result === "in_use") {
+    res.status(409).json({
+      error:
+        "No se puede eliminar la cuenta porque tiene transacciones o transferencias asociadas.",
+    });
     return;
   }
 

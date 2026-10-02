@@ -1,15 +1,17 @@
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "../../../components/Button";
 import type { Subcategory } from "../types/category";
 
 interface SubcategoryListItemProps {
   subcategory: Subcategory;
   onEdit: (subcategory: Subcategory) => void;
+  onDelete: (subcategory: Subcategory) => void;
 }
 
 export function SubcategoryListItem({
   subcategory,
   onEdit,
+  onDelete,
 }: SubcategoryListItemProps) {
   return (
     <li className="flex items-center gap-2 text-sm">
@@ -28,6 +30,16 @@ export function SubcategoryListItem({
         onClick={() => onEdit(subcategory)}
       >
         <Pencil className="size-3.5" />
+      </Button>
+
+      <Button
+        variant="ghost"
+        size="sm"
+        className="size-8 shrink-0 px-0"
+        aria-label="Eliminar subcategoría"
+        onClick={() => onDelete(subcategory)}
+      >
+        <Trash2 className="size-3.5" />
       </Button>
     </li>
   );

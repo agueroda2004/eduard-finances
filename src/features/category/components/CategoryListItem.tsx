@@ -1,4 +1,4 @@
-import { Pencil, Plus, Wallet } from "lucide-react";
+import { Pencil, Plus, Trash2, Wallet } from "lucide-react";
 import { Button } from "../../../components/Button";
 import { Skeleton } from "../../../components/Skeleton";
 import {
@@ -15,7 +15,9 @@ interface CategoryListItemProps {
   showInactive: boolean;
   onAddSubcategory: (category: Category) => void;
   onEdit: (category: Category) => void;
+  onDelete: (category: Category) => void;
   onEditSubcategory: (subcategory: Subcategory) => void;
+  onDeleteSubcategory: (subcategory: Subcategory) => void;
 }
 
 export function CategoryListItem({
@@ -23,7 +25,9 @@ export function CategoryListItem({
   showInactive,
   onAddSubcategory,
   onEdit,
+  onDelete,
   onEditSubcategory,
+  onDeleteSubcategory,
 }: CategoryListItemProps) {
   const { subcategories, isLoading } = useSubcategory(category.id, {
     includeInactive: showInactive,
@@ -73,6 +77,16 @@ export function CategoryListItem({
         >
           <Plus className="size-4" />
         </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="size-9 shrink-0 px-0"
+          aria-label="Eliminar categoría"
+          onClick={() => onDelete(category)}
+        >
+          <Trash2 className="size-4" />
+        </Button>
       </div>
 
       <div className="border-t border-border px-4 py-3">
@@ -90,6 +104,7 @@ export function CategoryListItem({
                 key={subcategory.id}
                 subcategory={subcategory}
                 onEdit={onEditSubcategory}
+                onDelete={onDeleteSubcategory}
               />
             ))}
           </ul>

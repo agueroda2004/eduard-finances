@@ -88,10 +88,18 @@ categoryRouter.patch("/categories/:id", async (req, res) => {
 
 categoryRouter.delete("/categories/:id", async (req, res) => {
   const ownerId = res.locals.ownerId as string;
-  const removed = await deleteCategory(ownerId, req.params.id);
+  const result = await deleteCategory(ownerId, req.params.id);
 
-  if (!removed) {
+  if (result === "not_found") {
     res.status(404).json({ error: "Categoría no encontrada" });
+    return;
+  }
+
+  if (result === "in_use") {
+    res.status(409).json({
+      error:
+        "No se puede eliminar la categoría porque tiene transacciones o subcategorías asociadas.",
+    });
     return;
   }
 
@@ -160,10 +168,18 @@ categoryRouter.patch("/subcategories/:id", async (req, res) => {
 
 categoryRouter.delete("/subcategories/:id", async (req, res) => {
   const ownerId = res.locals.ownerId as string;
-  const removed = await deleteSubcategory(ownerId, req.params.id);
+  const result = await deleteSubcategory(ownerId, req.params.id);
 
-  if (!removed) {
+  if (result === "not_found") {
     res.status(404).json({ error: "Subcategoría no encontrada" });
+    return;
+  }
+
+  if (result === "in_use") {
+    res.status(409).json({
+      error:
+        "No se puede eliminar la subcategoría porque tiene transacciones asociadas.",
+    });
     return;
   }
 

@@ -1,11 +1,17 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { db } from "../db/client.js";
-import { accounts, type AccountRow } from "../db/schema.js";
+import {
+  accounts,
+  transactions,
+  transfers,
+  type AccountRow,
+} from "../db/schema.js";
 import type {
   Account,
   CreateAccountDTO,
   UpdateAccountDTO,
 } from "../types/account.js";
+import type { DeleteResult } from "../types/common.js";
 
 function toAccount(row: AccountRow): Account {
   return {
@@ -90,11 +96,51 @@ export async function updateAccount(
 export async function deleteAccount(
   ownerId: string,
   id: string,
-): Promise<boolean> {
-  const rows = await db
-    .delete(accounts)
-    .where(and(eq(accounts.ownerId, ownerId), eq(accounts.id, id)))
-    .returning({ id: accounts.id });
+): Promise<DeleteResult> {
+  return db.transaction(async (tx) => {
+    const [account] = await tx
+      .select({ id: accounts.id })
+      .from(accounts)
+      .where(and(eq(accounts.ownerId, ownerId), eq(accounts.id, id)));
 
-  return rows.length > 0;
+    if (!account) {
+      return "not_found";
+    }
+
+    const [transaction] = await tx
+      .select({ id: transactions.id })
+      .from(transactions)
+      .where(
+        and(
+          eq(transactions.ownerId, ownerId),
+          eq(transactions.accountId, id),
+        ),
+      )
+      .limit(1);
+
+    if (transaction) {
+      return "in_use";
+    }
+
+    const [transfer] = await tx
+      .select({ id: transfers.id })
+      .from(transfers)
+      .where(
+        and(
+          eq(transfers.ownerId, ownerId),
+          or(eq(transfers.fromAccountId, id), eq(transfers.toAccountId, id)),
+        ),
+      )
+      .limit(1);
+
+    if (transfer) {
+      return "in_use";
+    }
+
+    await tx
+      .delete(accounts)
+      .where(and(eq(accounts.ownerId, ownerId), eq(accounts.id, id)));
+
+    return "deleted";
+  });
 }

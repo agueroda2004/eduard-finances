@@ -1,4 +1,4 @@
-import { Pencil, Wallet } from "lucide-react";
+import { Pencil, Trash2, Wallet } from "lucide-react";
 import { Button } from "../../../components/Button";
 import {
   ACCOUNT_ICONS,
@@ -11,9 +11,14 @@ import { ACCOUNT_TYPE_LABELS } from "../types/account.constants";
 interface AccountListItemProps {
   account: Account;
   onEdit: (account: Account) => void;
+  onDelete: (account: Account) => void;
 }
 
-export function AccountListItem({ account, onEdit }: AccountListItemProps) {
+export function AccountListItem({
+  account,
+  onEdit,
+  onDelete,
+}: AccountListItemProps) {
   const Icon = ACCOUNT_ICONS[account.icon as AccountIcon] ?? Wallet;
 
   return (
@@ -52,6 +57,16 @@ export function AccountListItem({ account, onEdit }: AccountListItemProps) {
         onClick={() => onEdit(account)}
       >
         <Pencil className="size-4" />
+      </Button>
+
+      <Button
+        variant="ghost"
+        size="sm"
+        className="size-9 shrink-0 px-0"
+        aria-label="Eliminar cuenta"
+        onClick={() => onDelete(account)}
+      >
+        <Trash2 className="size-4" />
       </Button>
     </li>
   );

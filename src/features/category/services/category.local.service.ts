@@ -12,6 +12,10 @@ import type {
   CategoryRepository,
   SubcategoryRepository,
 } from "../types/category.interface";
+import {
+  hasTransactionsForCategory,
+  hasTransactionsForSubcategory,
+} from "../../transaction/services/transaction.relations";
 
 const CATEGORY_STORAGE_KEY = "eduard:categories";
 const SUBCATEGORY_STORAGE_KEY = "eduard:subcategories";
@@ -92,16 +96,21 @@ export function createCategoryLocalService(): CategoryRepository {
     },
 
     async remove(id: CategoryId) {
+      const subcategories = readAll<Subcategory>(SUBCATEGORY_STORAGE_KEY);
+      const hasSubcategories = subcategories.some(
+        (subcategory) => subcategory.categoryId === id,
+      );
+
+      if (hasTransactionsForCategory(id) || hasSubcategories) {
+        throw new Error(
+          "No se puede eliminar la categoría porque tiene transacciones o subcategorías asociadas.",
+        );
+      }
+
       const categories = readAll<Category>(CATEGORY_STORAGE_KEY);
       writeAll(
         CATEGORY_STORAGE_KEY,
         categories.filter((category) => category.id !== id),
-      );
-
-      const subcategories = readAll<Subcategory>(SUBCATEGORY_STORAGE_KEY);
-      writeAll(
-        SUBCATEGORY_STORAGE_KEY,
-        subcategories.filter((subcategory) => subcategory.categoryId !== id),
       );
     },
   };
@@ -164,6 +173,12 @@ export function createSubcategoryLocalService(): SubcategoryRepository {
     },
 
     async remove(id: SubcategoryId) {
+      if (hasTransactionsForSubcategory(id)) {
+        throw new Error(
+          "No se puede eliminar la subcategoría porque tiene transacciones asociadas.",
+        );
+      }
+
       const subcategories = readAll<Subcategory>(SUBCATEGORY_STORAGE_KEY);
       writeAll(
         SUBCATEGORY_STORAGE_KEY,
