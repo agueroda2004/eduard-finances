@@ -5,7 +5,7 @@ import type { NavbarProps } from "../types/layout";
 
 export function Navbar({ onMenuClick, menuOpen }: NavbarProps) {
   return (
-    <header className="pt-safe sticky top-0 z-30 flex min-h-14 items-center gap-2 border-b border-border bg-surface px-4">
+    <header className="z-30 flex h-14 items-center gap-2 border-b border-border bg-surface px-4 lg:sticky lg:top-0">
       <Button
         variant="ghost"
         size="sm"
