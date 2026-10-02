@@ -42,7 +42,7 @@ export function AppLayout() {
   }, [isOpen]);
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
+    <div className="flex min-h-dvh bg-background text-foreground">
       <Sidebar open={isOpen} onClose={closeSidebar} />
 
       {isOpen ? (

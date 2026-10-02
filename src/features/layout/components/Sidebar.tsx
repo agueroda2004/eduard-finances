@@ -15,7 +15,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         open ? "translate-x-0" : "-translate-x-full",
       )}
     >
-      <div className="flex h-14 items-center justify-between gap-2 border-b border-border px-4">
+      <div className="pt-safe flex min-h-14 items-center justify-between gap-2 border-b border-border px-4">
         <Logo size="sm" withText />
         <button
           type="button"
@@ -90,7 +90,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         </NavLink>
       </nav>
 
-      <div className="border-t border-border p-3">
+      <div className="pb-safe border-t border-border p-3">
         <AccountCard />
       </div>
     </aside>

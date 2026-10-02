@@ -12,8 +12,8 @@ export function LoginPage() {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-surface px-6 text-foreground">
-      <ThemeToggle className="absolute right-4 top-4" />
+    <main className="relative flex min-h-dvh items-center justify-center bg-surface px-6 text-foreground">
+      <ThemeToggle className="absolute right-[calc(1rem+env(safe-area-inset-right))] top-[calc(1rem+env(safe-area-inset-top))]" />
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center gap-3 text-center">
           <Logo size="md" />
