@@ -10,8 +10,8 @@ import { ACCOUNT_TYPE_LABELS } from "../types/account.constants";
 
 interface AccountListItemProps {
   account: Account;
-  onEdit: (account: Account) => void;
-  onDelete: (account: Account) => void;
+  onEdit?: (account: Account) => void;
+  onDelete?: (account: Account) => void;
 }
 
 export function AccountListItem({
@@ -49,25 +49,29 @@ export function AccountListItem({
         )}
       </div>
 
-      <Button
-        variant="ghost"
-        size="sm"
-        className="size-9 shrink-0 px-0"
-        aria-label="Editar cuenta"
-        onClick={() => onEdit(account)}
-      >
-        <Pencil className="size-4" />
-      </Button>
+      {onEdit ? (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="size-9 shrink-0 px-0"
+          aria-label="Editar cuenta"
+          onClick={() => onEdit(account)}
+        >
+          <Pencil className="size-4" />
+        </Button>
+      ) : null}
 
-      <Button
-        variant="ghost"
-        size="sm"
-        className="size-9 shrink-0 px-0"
-        aria-label="Eliminar cuenta"
-        onClick={() => onDelete(account)}
-      >
-        <Trash2 className="size-4" />
-      </Button>
+      {onDelete ? (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="size-9 shrink-0 px-0"
+          aria-label="Eliminar cuenta"
+          onClick={() => onDelete(account)}
+        >
+          <Trash2 className="size-4" />
+        </Button>
+      ) : null}
     </li>
   );
 }

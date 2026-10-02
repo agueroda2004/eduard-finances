@@ -4,9 +4,9 @@ import { LoginPage } from "../features/auth/page/LoginPage";
 import { AccountsPage } from "../features/account/page/AccountsPage";
 import { CategoriesPage } from "../features/category";
 import { AppLayout } from "../features/layout";
+import { DashboardPage } from "../features/dashboard";
 import { TransactionsPage } from "../features/transaction";
 import { TransfersPage } from "../features/transfer";
-import { HomePage } from "../pages/HomePage";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -16,7 +16,7 @@ export const router = createBrowserRouter([
       {
         element: <AppLayout />,
         children: [
-          { path: "/", element: <HomePage /> },
+          { path: "/", element: <DashboardPage /> },
           { path: "/accounts", element: <AccountsPage /> },
           { path: "/categories", element: <CategoriesPage /> },
           { path: "/transactions", element: <TransactionsPage /> },
