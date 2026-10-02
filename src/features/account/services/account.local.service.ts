@@ -29,8 +29,12 @@ function writeAll(accounts: Account[]): void {
 
 export function createAccountLocalService(): AccountRepository {
   return {
-    async findAll(ownerId) {
-      return readAll().filter((account) => account.ownerId === ownerId);
+    async findAll(ownerId, options) {
+      return readAll().filter(
+        (account) =>
+          account.ownerId === ownerId &&
+          (options?.includeInactive || account.active),
+      );
     },
 
     async findById(id) {

@@ -5,6 +5,7 @@ export type {
   Account,
   AccountId,
   CreateAccountInput,
+  ListOptions,
   UpdateAccountInput,
 } from "./types/account";
 export type { AccountRepository } from "./types/account.interface";

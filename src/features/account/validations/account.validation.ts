@@ -24,9 +24,11 @@ export const createAccountSchema = z.object({
 
 export type CreateAccountFormValues = z.infer<typeof createAccountSchema>;
 
-export const updateAccountSchema = createAccountSchema.omit({
-  balance: true,
-  currency: true,
-});
+export const updateAccountSchema = createAccountSchema
+  .omit({
+    balance: true,
+    currency: true,
+  })
+  .extend({ active: z.boolean() });
 
 export type UpdateAccountFormValues = z.infer<typeof updateAccountSchema>;

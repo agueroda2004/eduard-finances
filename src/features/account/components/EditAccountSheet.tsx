@@ -5,6 +5,7 @@ import { Button } from "../../../components/Button";
 import { Dropdown } from "../../../components/Dropdown";
 import { Field } from "../../../components/Field";
 import { Input } from "../../../components/Input";
+import { Toggle } from "../../../components/Toggle";
 import {
   COLOR_LABELS,
   COLOR_VALUES,
@@ -60,6 +61,7 @@ function EditAccountForm({ account, onClose }: EditAccountFormProps) {
     type: account.type,
     icon: account.icon as AccountIcon,
     color: account.color as ColorValue,
+    active: account.active,
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState("");
@@ -173,8 +175,22 @@ function EditAccountForm({ account, onClose }: EditAccountFormProps) {
         </div>
       </Field>
 
-      {formError ? <p className="text-sm text-danger">{formError}</p> : null}
+      <Field label="Estado" htmlFor="edit-account-active">
+        <div className="flex items-center gap-3">
+          <Toggle
+            id="edit-account-active"
+            checked={values.active}
+            onChange={(active) =>
+              setValues((current) => ({ ...current, active }))
+            }
+          />
+          <span className="text-sm text-muted-foreground">
+            {values.active ? "Activa" : "Inactiva"}
+          </span>
+        </div>
+      </Field>
 
+      {formError ? <p className="text-sm text-danger">{formError}</p> : null}
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="ghost" onClick={onClose}>
           Cancelar

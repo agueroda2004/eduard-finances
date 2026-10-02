@@ -2,6 +2,10 @@ import type { AccountType, Currency } from "./account.constants";
 
 export type AccountId = string;
 
+export interface ListOptions {
+  includeInactive?: boolean;
+}
+
 export interface Account {
   id: AccountId;
   ownerId: string;

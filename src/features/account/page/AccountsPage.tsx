@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Eye, EyeOff, Plus } from "lucide-react";
 import { Button } from "../../../components/Button";
 import { AccountListItem } from "../components/AccountListItem";
 import { AccountListSkeleton } from "../components/AccountListSkeleton";
@@ -9,7 +9,10 @@ import { useAccount } from "../hooks/useAccount";
 import type { Account } from "../types/account";
 
 export function AccountsPage() {
-  const { accounts, isLoading, isError } = useAccount();
+  const [showInactive, setShowInactive] = useState(false);
+  const { accounts, isLoading, isError } = useAccount({
+    includeInactive: showInactive,
+  });
   const [isCreateOpen, setCreateOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
 
@@ -20,10 +23,25 @@ export function AccountsPage() {
           <h1 className="text-lg font-semibold text-foreground">Cuentas</h1>
           <p className="text-sm text-muted-foreground">Administra tus cuentas.</p>
         </div>
-        <Button size="sm" onClick={() => setCreateOpen(true)}>
-          <Plus className="size-4" />
-          Nueva cuenta
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            aria-pressed={showInactive}
+            onClick={() => setShowInactive((current) => !current)}
+          >
+            {showInactive ? (
+              <EyeOff className="size-4" />
+            ) : (
+              <Eye className="size-4" />
+            )}
+            {showInactive ? "Ocultar inactivas" : "Ver inactivas"}
+          </Button>
+          <Button size="sm" onClick={() => setCreateOpen(true)}>
+            <Plus className="size-4" />
+            Nueva cuenta
+          </Button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -32,7 +50,11 @@ export function AccountsPage() {
         <p className="text-sm text-danger">No se pudieron cargar las cuentas.</p>
       ) : accounts.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border p-8 text-center">
-          <p className="text-sm text-muted-foreground">Aún no tienes cuentas.</p>
+          <p className="text-sm text-muted-foreground">
+            {showInactive
+              ? "Aún no tienes cuentas."
+              : "Aún no tienes cuentas activas."}
+          </p>
         </div>
       ) : (
         <ul className="flex flex-col gap-3">

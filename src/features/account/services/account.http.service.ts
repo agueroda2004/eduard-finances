@@ -39,8 +39,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export function createAccountHttpService(): AccountRepository {
   return {
-    findAll() {
-      return request<Account[]>("/api/accounts");
+    findAll(_ownerId, options) {
+      const query = options?.includeInactive ? "?includeInactive=true" : "";
+      return request<Account[]>(`/api/accounts${query}`);
     },
 
     findById(id) {
