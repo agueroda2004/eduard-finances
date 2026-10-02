@@ -9,6 +9,7 @@ export type {
   UpdateAccountInput,
 } from "./types/account";
 export type { AccountRepository } from "./types/account.interface";
+export { resolveIcon, toAccountOptions } from "./utils/options";
 export { useAccount, accountKeys } from "./hooks/useAccount";
 export type { CreateAccountPayload } from "./hooks/useAccount";
 export { AccountsPage } from "./page/AccountsPage";

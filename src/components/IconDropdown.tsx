@@ -3,13 +3,12 @@ import { Check, ChevronDown, type LucideIcon } from "lucide-react";
 import { createPortal } from "react-dom";
 import { useDropdown } from "../hooks/useDropdown";
 import { cn } from "../utils/cn";
-import { getContrastColor } from "../utils/color";
 
 export interface IconDropdownOption<T extends string = string> {
   value: T;
   label: string;
-  icon: LucideIcon;
-  color: string;
+  icon?: LucideIcon;
+  color?: string;
 }
 
 interface IconDropdownProps<T extends string = string> {
@@ -23,13 +22,23 @@ interface IconDropdownProps<T extends string = string> {
   className?: string;
 }
 
-function OptionBadge({ icon: Icon, color }: { icon: LucideIcon; color: string }) {
+function OptionBadge({
+  icon: Icon,
+  color,
+}: {
+  icon?: LucideIcon;
+  color?: string;
+}) {
+  if (!Icon || !color) {
+    return null;
+  }
+
   return (
     <span
       className="flex size-8 shrink-0 items-center justify-center rounded-lg"
       style={{ backgroundColor: color }}
     >
-      <Icon className="size-4" style={{ color: getContrastColor(color) }} />
+      <Icon className="size-4 text-white" />
     </span>
   );
 }
