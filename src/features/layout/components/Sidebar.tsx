@@ -1,4 +1,4 @@
-import { Landmark, X } from "lucide-react";
+import { Landmark, Tags, X } from "lucide-react";
 import { NavLink } from "react-router";
 import { Logo } from "../../../components/Logo";
 import { cn } from "../../../utils/cn";
@@ -42,6 +42,21 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         >
           <Landmark className="size-4" />
           Cuentas
+        </NavLink>
+        <NavLink
+          to="/categories"
+          onClick={onClose}
+          className={({ isActive }) =>
+            cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+              isActive
+                ? "bg-muted text-foreground"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+            )
+          }
+        >
+          <Tags className="size-4" />
+          Categorías
         </NavLink>
       </nav>
 
